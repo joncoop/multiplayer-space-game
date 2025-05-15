@@ -47,6 +47,7 @@ class Ship(Entity):
         self.previous_angle = self.angle
         self.velocity = pygame.Vector2(0, 0)
         self.speed = 0
+        self.blackhole_escape_time = 30 # time before getting sucked in
 
     def act(self, events, keys):
         if keys[self.controls['left']]:
@@ -99,7 +100,7 @@ class Ship(Entity):
         self.game.lasers.add(laser)
 
     def respawn(self):
-        self.location = self.original_location
+        self.location = self.original_location.copy()
         self.velocity *= 0
 
     def check_boundaries(self):
@@ -122,10 +123,23 @@ class Ship(Entity):
             self.location.y = max(self.location.y, half_height)
             self.location.y = min(self.location.y, self.game.world_height - half_height)
     
+    def check_blackholes(self):
+        hits = pygame.sprite.spritecollide(self, self.game.blackholes, False, pygame.sprite.collide_mask)
+
+        for blackhole in hits:
+            if self.blackhole_escape_time == 0:
+                blackhole.apply(self)
+            else:
+                self.blackhole_escape_time -= 1
+
+        if not hits:
+            self.blackhole_escape_time = 30
+
     def update(self, *args, **kwargs):
         self.rotate_image(self.angle)
         self.move()
         self.check_boundaries()
+        self.check_blackholes()
 
 
 class Laser(Entity):
@@ -176,3 +190,21 @@ class Asteroid(Entity):
         self.angle += self.rotational_speed
         self.rotate_image(self.angle)
         self.check_world_edges()
+
+
+class BlackHole(Entity):
+
+    def __init__(self, game, image, location, destination):
+        super().__init__(game, image, location)    
+
+        self.rotational_speed = random.randrange(ASTEROID_MIN_ROTATION_SPEED, ASTEROID_MAX_ROTATION_SPEED)
+        self.rotational_speed *= random.choice([-1, 1])
+        self.destination = destination
+
+    def apply(self, ship):
+        ship.location.update(self.destination)
+        ship.blackhole_escape_time = 120 # move to settings
+
+    def update(self, *args, **kwargs):
+        self.angle += self.rotational_speed
+        self.rotate_image(self.angle)

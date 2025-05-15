@@ -50,10 +50,14 @@ ASTEROID_IMGS = ['assets/images/meteors/meteorGrey_big1.png',
                  'assets/images/meteors/meteorGrey_med2.png',
                  'assets/images/meteors/meteorGrey_small1.png',
                  'assets/images/meteors/meteorGrey_small2.png']
+
 ASTEROID_MIN_SPEED = 2
 ASTEROID_MAX_SPEED = 8
 ASTEROID_MIN_ROTATION_SPEED = 1
 ASTEROID_MAX_ROTATION_SPEED = 4
+
+# Blackholes
+BLACKHOLE_IMG = 'assets/images/blackholes/blackhole_small.png'
 
 # Sounds
 SHOOT_SND = 'assets/sounds/laser.ogg'

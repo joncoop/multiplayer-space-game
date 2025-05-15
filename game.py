@@ -32,6 +32,7 @@ class Game:
     def load_assets(self):
         self.ship_img = pygame.image.load(SHIP_IMG).convert_alpha()
         self.laser_img = pygame.image.load(PLAYER_LASER).convert_alpha()
+        self.blackhole_img = pygame.image.load(BLACKHOLE_IMG).convert_alpha()
         self.asteroid_imgs = [pygame.image.load(img).convert_alpha()
                               for img in ASTEROID_IMGS]
 
@@ -48,12 +49,13 @@ class Game:
         self.players = pygame.sprite.Group()
         self.lasers = pygame.sprite.Group()
         self.asteroids = pygame.sprite.Group()
-        self.fire = pygame.sprite.Group()
+        self.blackholes = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
         
         self.start_location = WORLD_WIDTH // 2, WOLRD_HEIGHT // 2
         self.ship = Ship(self, self.ship_img, self.start_location, CONTROLS)
         self.players.add(self.ship)
+
 
         self.all_sprites.add(self.players)
 
@@ -68,6 +70,13 @@ class Game:
             asteroid = Asteroid(self, img, [x, y])
             self.asteroids.add(asteroid)            
         
+        # make blackhole teleporters
+        loc1 = [2500, 2500]
+        loc2 = [7500, 7500]
+        blackhole1 = BlackHole(self, self.blackhole_img, loc1, loc2)
+        blackhole2 = BlackHole(self, self.blackhole_img, loc2, loc1)
+        self.blackholes.add(blackhole1, blackhole2)
+
         # maybe make stars sprites later, or perhaps make a StarField class
         self.star_locs = [] 
         for _ in range(3000):
@@ -105,7 +114,7 @@ class Game:
             self.ship.act(filtered_events, pressed_keys)
      
     def update(self):
-        self.all_sprites.add(self.lasers, self.asteroids, self.fire)
+        self.all_sprites.add(self.lasers, self.asteroids, self.blackholes)
 
         if self.scene == Game.PLAYING:
             self.all_sprites.update()
@@ -144,7 +153,7 @@ class Game:
             self.process_input()     
             self.update()     
             self.render()
-            pygame.display.set_caption(f"{CAPTION} Angle={self.ship.angle} Speed={self.ship.velocity.length(): .2f} FPS={self.clock.get_fps(): .2f}")
+            pygame.display.set_caption(f"{CAPTION} Angle={self.ship.angle} Speed={self.ship.velocity.length(): .2f} FPS={self.clock.get_fps(): .2f},location={self.ship.location}")
             pygame.display.update()
             self.clock.tick(FPS)
 
