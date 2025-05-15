@@ -217,11 +217,13 @@ class BlackHole(Entity):
         if ship.controls_disabled:
             ship.location.move_towards_ip(self.location, 1)
             ship.rotate_amount(self.rotational_speed)
+            #ship.image.set_alpha(ship.image.get_alpha() * 0.8) # doesn't work because rotate is based on original_image
         
-        if ship.location.distance_squared_to(self.location) < 2:
+        if ship.location.distance_squared_to(self.location) < 1:
             ship.location.update(self.destination)
-            ship.blackhole_escape_time = 120 # move to settings
+            ship.blackhole_escape_time = BLACKHOLE_ESCAPE_TIME
             ship.controls_disabled = False
+            #ship.image.set_alpha(255)
 
     def update(self, *args, **kwargs):
         self.angle += self.rotational_speed

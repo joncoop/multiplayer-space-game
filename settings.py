@@ -58,6 +58,7 @@ ASTEROID_MAX_ROTATION_SPEED = 4
 
 # Blackholes
 BLACKHOLE_IMG = 'assets/images/blackholes/blackhole_384x384.png'
+BLACKHOLE_ESCAPE_TIME = 2 * FPS
 
 # Sounds
 SHOOT_SND = 'assets/sounds/laser.ogg'
