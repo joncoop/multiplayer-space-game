@@ -57,7 +57,7 @@ ASTEROID_MIN_ROTATION_SPEED = 1
 ASTEROID_MAX_ROTATION_SPEED = 4
 
 # Blackholes
-BLACKHOLE_IMG = 'assets/images/blackholes/blackhole_small.png'
+BLACKHOLE_IMG = 'assets/images/blackholes/blackhole_384x384.png'
 
 # Sounds
 SHOOT_SND = 'assets/sounds/laser.ogg'

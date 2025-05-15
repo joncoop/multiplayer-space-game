@@ -17,7 +17,7 @@ class ScrollingCamera:
 
         self.last_position = self.target.rect.center
         self.focus = self.last_position
-        self.visibile = True
+        self.visibile = False
 
     def toggle(self):
         self.visibile = not self.visibile

@@ -122,6 +122,7 @@ class Game:
         self.camera.update()
 
     def render(self):
+        group_drawing_order = [self.blackholes, self.lasers, self.asteroids, self.players]
         offset_x, offset_y = self.camera.get_offsets()
 
         self.screen.fill(BLACK)
@@ -131,10 +132,11 @@ class Game:
             y = loc[1] - offset_y
             pygame.draw.circle(self.screen, WHITE, [x, y], 3)
 
-        for sprite in self.all_sprites:
-            x = sprite.rect.x - offset_x
-            y = sprite.rect.y - offset_y
-            self.screen.blit(sprite.image, [x, y])
+        for group in group_drawing_order:
+            for sprite in group:
+                x = sprite.rect.x - offset_x
+                y = sprite.rect.y - offset_y
+                self.screen.blit(sprite.image, [x, y])
         
         # World boundary
         pygame.draw.rect(self.screen, RED, [-offset_x, -offset_y, self.world_width, self.world_height], 2)

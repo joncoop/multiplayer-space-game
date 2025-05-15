@@ -21,11 +21,15 @@ class Entity(pygame.sprite.Sprite):
         self.angle = 0
         self.previous_angle = self.angle
 
-    def rotate_image(self, angle):
+    def rotate_to(self, angle):
         if angle != self.previous_angle:
             self.image = pygame.transform.rotate(self.original_image, angle - ROTATION_OFFSET)
             self.rect = self.image.get_rect(center=self.location)
             self.mask = pygame.mask.from_surface(self.image)
+
+    def rotate_amount(self, angle):
+        self.angle += angle
+        self.rotate_to(self.angle)
 
     def move(self):
         self.location += self.velocity
@@ -47,9 +51,13 @@ class Ship(Entity):
         self.previous_angle = self.angle
         self.velocity = pygame.Vector2(0, 0)
         self.speed = 0
-        self.blackhole_escape_time = 30 # time before getting sucked in
+        self.blackhole_escape_time = 0
+        self.controls_disabled = False
 
     def act(self, events, keys):
+        if self.controls_disabled:
+            return
+        
         if keys[self.controls['left']]:
             self.rotate_left()
         elif keys[self.controls['right']]:
@@ -136,7 +144,7 @@ class Ship(Entity):
             self.blackhole_escape_time = 30
 
     def update(self, *args, **kwargs):
-        self.rotate_image(self.angle)
+        self.rotate_to(self.angle)
         self.move()
         self.check_boundaries()
         self.check_blackholes()
@@ -147,7 +155,7 @@ class Laser(Entity):
     def __init__(self, game, image, location, angle):
         super().__init__(game, image, location)
 
-        self.rotate_image(angle)
+        self.rotate_to(angle)
         radians = math.radians(angle)
         self.velocity = pygame.Vector2(math.cos(radians), -1 * math.sin(radians)) * LASER_SPEED
         self.original_location = self.location.copy()
@@ -188,7 +196,7 @@ class Asteroid(Entity):
     def update(self, *args, **kwargs):
         self.move()
         self.angle += self.rotational_speed
-        self.rotate_image(self.angle)
+        self.rotate_to(self.angle)
         self.check_world_edges()
 
 
@@ -202,9 +210,19 @@ class BlackHole(Entity):
         self.destination = destination
 
     def apply(self, ship):
-        ship.location.update(self.destination)
-        ship.blackhole_escape_time = 120 # move to settings
+        if ship.blackhole_escape_time == 0:
+            ship.controls_disabled = True
+            ship.velocity.update(0, 0)
+
+        if ship.controls_disabled:
+            ship.location.move_towards_ip(self.location, 1)
+            ship.rotate_amount(self.rotational_speed)
+        
+        if ship.location.distance_squared_to(self.location) < 2:
+            ship.location.update(self.destination)
+            ship.blackhole_escape_time = 120 # move to settings
+            ship.controls_disabled = False
 
     def update(self, *args, **kwargs):
         self.angle += self.rotational_speed
-        self.rotate_image(self.angle)
+        self.rotate_to(self.angle)
