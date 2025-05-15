@@ -12,3 +12,4 @@ This is a work in progress. The eventual goal is to have multiple players battle
 - Double-shot powerup.
 - Shield powerup.
 - Forcefield powerup.
+- Shoot asteroids to spawn minerals to "mine". 
