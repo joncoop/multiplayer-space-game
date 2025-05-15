@@ -8,3 +8,7 @@ This is a work in progress. The eventual goal is to have multiple players battle
 - Prettier star backdrop. (Easy)
 - Shooting asteroids breaks them into smaller pieces. Smallest ones dissapear.
 - Add animated fire when ship is using thruster. (Easy, just overlay ship and fire image.)
+- Speedboost powerup that gives 3 boosts (like Mario Kart mushrooms).
+- Double-shot powerup.
+- Shield powerup.
+- Forcefield powerup.
