@@ -117,6 +117,12 @@ class Ship(Entity):
         self.location = self.original_location.copy()
         self.velocity *= 0
 
+    def check_asteroids(self):
+        hits = pygame.sprite.spritecollide(self, self.game.asteroids, False, pygame.sprite.collide_mask)
+
+        if hits:
+            self.respawn()  # should probably blow up and lose lives or something
+
     def check_boundaries(self):
         if WORLD_WRAP:
             if self.location.x < 0:
@@ -154,6 +160,7 @@ class Ship(Entity):
         self.move()
         self.check_boundaries()
         self.check_blackholes()
+        self.check_asteroids()
 
 
 class Laser(Entity):
@@ -188,6 +195,13 @@ class Asteroid(Entity):
         self.rotational_speed = random.randrange(ASTEROID_MIN_ROTATION_SPEED, ASTEROID_MAX_ROTATION_SPEED)
         self.rotational_speed *= random.choice([-1, 1])
 
+    def check_lasers(self):
+        hits = pygame.sprite.spritecollide(self, self.game.lasers, False, pygame.sprite.collide_mask)
+
+        if hits:
+            self.kill()  # later, they should break up
+
+ 
     def check_world_edges(self):
         if self.location.x < 0:
             self.location.x = self.game.world_width
@@ -203,6 +217,7 @@ class Asteroid(Entity):
         self.move()
         self.angle += self.rotational_speed
         self.rotate_to(self.angle)
+        self.check_lasers()
         self.check_world_edges()
 
 

@@ -41,7 +41,7 @@ FIRE = 'assets/images/effects/fire13.png'
 POWERUP_IMG = 'assets/images/powerups/powerupYellow_bolt.png'
 
 # Asteroids
-NUM_ASTEROIDS = 100
+NUM_ASTEROIDS = 300
 ASTEROID_IMGS = ['assets/images/meteors/meteorGrey_big1.png',
                  'assets/images/meteors/meteorGrey_big2.png',
                  'assets/images/meteors/meteorGrey_big3.png',
