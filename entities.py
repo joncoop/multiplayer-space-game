@@ -23,9 +23,11 @@ class Entity(pygame.sprite.Sprite):
 
     def rotate_to(self, angle):
         if angle != self.previous_angle:
+            alpha = self.image.get_alpha()
             self.image = pygame.transform.rotate(self.original_image, angle - ROTATION_OFFSET)
             self.rect = self.image.get_rect(center=self.location)
             self.mask = pygame.mask.from_surface(self.image)
+            self.image.set_alpha(alpha)
 
     def rotate_amount(self, angle):
         self.angle += angle
@@ -33,6 +35,10 @@ class Entity(pygame.sprite.Sprite):
 
     def move(self):
         self.location += self.velocity
+        self.rect.center = self.location
+
+    def move_to(self, location):
+        self.location.update(location)
         self.rect.center = self.location
         
     def update(self, *args, **kwargs):
@@ -217,13 +223,13 @@ class BlackHole(Entity):
         if ship.controls_disabled:
             ship.location.move_towards_ip(self.location, 1)
             ship.rotate_amount(self.rotational_speed)
-            #ship.image.set_alpha(ship.image.get_alpha() * 0.8) # doesn't work because rotate is based on original_image
+            ship.image.set_alpha(ship.image.get_alpha() * 0.999) # Magic number alert!
         
-        if ship.location.distance_squared_to(self.location) < 1:
-            ship.location.update(self.destination)
+        if ship.location.distance_squared_to(self.location) < 1 and ship.image.get_alpha() < 1: # Another magic number!
+            ship.move_to(self.destination)
             ship.blackhole_escape_time = BLACKHOLE_ESCAPE_TIME
             ship.controls_disabled = False
-            #ship.image.set_alpha(255)
+            ship.image.set_alpha(255)
 
     def update(self, *args, **kwargs):
         self.angle += self.rotational_speed

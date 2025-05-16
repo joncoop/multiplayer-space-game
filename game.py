@@ -71,8 +71,8 @@ class Game:
             self.asteroids.add(asteroid)            
         
         # make blackhole teleporters
-        loc1 = [2500, 2500]
-        loc2 = [7500, 7500]
+        loc1 = [7500, 7500]
+        loc2 = [12500, 12500]
         blackhole1 = BlackHole(self, self.blackhole_img, loc1, loc2)
         blackhole2 = BlackHole(self, self.blackhole_img, loc2, loc1)
         self.blackholes.add(blackhole1, blackhole2)

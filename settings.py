@@ -17,8 +17,8 @@ PRIMARY_FONT = 'assets/fonts/recharge bd.ttf'
 SECONDARY_FONT = None
 
 # World
-WORLD_WIDTH = 10000
-WOLRD_HEIGHT = 10000
+WORLD_WIDTH = 20000
+WOLRD_HEIGHT = 20000
 WORLD_WRAP = False
 
 # Ship
@@ -41,7 +41,7 @@ FIRE = 'assets/images/effects/fire13.png'
 POWERUP_IMG = 'assets/images/powerups/powerupYellow_bolt.png'
 
 # Asteroids
-NUM_ASTEROIDS = 50
+NUM_ASTEROIDS = 100
 ASTEROID_IMGS = ['assets/images/meteors/meteorGrey_big1.png',
                  'assets/images/meteors/meteorGrey_big2.png',
                  'assets/images/meteors/meteorGrey_big3.png',
