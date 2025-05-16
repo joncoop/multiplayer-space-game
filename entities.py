@@ -116,6 +116,8 @@ class Ship(Entity):
     def respawn(self):
         self.location = self.original_location.copy()
         self.velocity *= 0
+        self.blackhole_escape_time = 0
+        self.controls_disabled = False
 
     def check_asteroids(self):
         hits = pygame.sprite.spritecollide(self, self.game.asteroids, False, pygame.sprite.collide_mask)
@@ -151,9 +153,6 @@ class Ship(Entity):
                 blackhole.apply(self)
             else:
                 self.blackhole_escape_time -= 1
-
-        if not hits:
-            self.blackhole_escape_time = 30
 
     def update(self, *args, **kwargs):
         self.rotate_to(self.angle)

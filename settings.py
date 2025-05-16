@@ -10,6 +10,7 @@ FPS = 60
 # Define colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+LIGHT_GRAY = (150, 150, 150)
 RED = (200, 0, 0)
 
 # Fonts
@@ -40,8 +41,11 @@ FIRE = 'assets/images/effects/fire13.png'
 # Items
 POWERUP_IMG = 'assets/images/powerups/powerupYellow_bolt.png'
 
+# Stars
+NUM_STARS = 5000
+
 # Asteroids
-NUM_ASTEROIDS = 300
+NUM_ASTEROIDS = 200
 ASTEROID_IMGS = ['assets/images/meteors/meteorGrey_big1.png',
                  'assets/images/meteors/meteorGrey_big2.png',
                  'assets/images/meteors/meteorGrey_big3.png',

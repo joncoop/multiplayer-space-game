@@ -79,7 +79,7 @@ class Game:
 
         # maybe make stars sprites later, or perhaps make a StarField class
         self.star_locs = [] 
-        for _ in range(3000):
+        for _ in range(NUM_STARS):
             x = random.randrange(0, self.world_width)
             y = random.randrange(0, self.world_width)
             self.star_locs.append([x, y])
@@ -130,7 +130,9 @@ class Game:
         for loc in self.star_locs:
             x = loc[0] - offset_x
             y = loc[1] - offset_y
-            pygame.draw.circle(self.screen, WHITE, [x, y], 3)
+            r = random.randint(0, 50) # Magic number again!
+            color = WHITE if r == 0 else LIGHT_GRAY
+            pygame.draw.circle(self.screen, color, [x, y], 3)
 
         for group in group_drawing_order:
             for sprite in group:
