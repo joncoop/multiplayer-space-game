@@ -26,6 +26,8 @@ WORLD_WRAP = False  # Camera lag is kinda weird if True
 SHIP_IMG = 'assets/images/player_ships/playerShip1_blue.png'
 SHIP_MAX_SPEED = 16
 SHIP_TURN_SPEED = 2
+SHIP_STARTING_SHIELD = 3
+
 ACCELERATION = 0.50
 DRAG = 0.01  # 0=No drag, 1=Instant stop
 MIN_VELOCITY_SQUARED = 0.25
@@ -35,17 +37,24 @@ PLAYER_LASER = 'assets/images/lasers/laserBlue05.png'
 LASER_SPEED = 24
 MAX_LASER_DISTANCE = 3000
 
-# Effects
-FIRE = 'assets/images/effects/fire13.png'
+# PULSAR
+PULSAR_IMG = 'assets/images/items/pulsar_256x151.png'
+PULSAR_ROTATION_SPEED = 10
 
 # Items
-POWERUP_IMG = 'assets/images/powerups/powerupYellow_bolt.png'
+POWERUP_IMG = 'assets/images/items/PowerupYellow_bolt.png'
+ITEM_MIN_SPEED = 5
+ITEM_MAX_SPEED = 10
+MIN_ITEM_DISTANCE = 500
+MAX_ITEM_DISTANCE = 4000
+
+ITEMS_PER_SECOND = 0.1
 
 # Stars
-NUM_STARS = 5000
+NUM_STARS = 4000
 
 # Asteroids
-NUM_ASTEROIDS = 200
+NUM_ASTEROIDS = 100
 ASTEROID_IMGS = ['assets/images/meteors/meteorGrey_big1.png',
                  'assets/images/meteors/meteorGrey_big2.png',
                  'assets/images/meteors/meteorGrey_big3.png',
@@ -63,11 +72,13 @@ ASTEROID_MAX_ROTATION_SPEED = 4
 # Blackholes
 BLACKHOLE_IMG = 'assets/images/blackholes/blackhole_384x384.png'
 BLACKHOLE_ESCAPE_TIME = 2 * FPS
+BLACKHOLE_MIN_ROTATION_SPEED = 3
+BLACKHOLE_MAX_ROTATION_SPEED = 8
 
 # Sounds
 SHOOT_SND = 'assets/sounds/laser.ogg'
 EXPLOSION_SND = 'assets/sounds/explosion.ogg'
-POWERUP_SND = 'assets/sounds/powerup.wav'
+ITEM_SND = 'assets/sounds/ITEM.wav'
 
 # Music
 TITLE_MUSIC = 'assets/music/calm_happy.ogg'

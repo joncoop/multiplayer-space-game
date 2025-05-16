@@ -65,7 +65,10 @@ class HUD:
         pass
 
     def draw(self, surface):
-        pass
+        text = self.secondary_font.render(f"Shield: {self.game.ship.shield}", True, WHITE)
+        rect = text.get_rect()
+        rect.bottomleft = 32, SCREEN_HEIGHT - 32
+        surface.blit(text, rect)
 
 
 class Minimap:

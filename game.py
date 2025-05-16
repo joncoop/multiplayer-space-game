@@ -33,6 +33,8 @@ class Game:
         self.ship_img = pygame.image.load(SHIP_IMG).convert_alpha()
         self.laser_img = pygame.image.load(PLAYER_LASER).convert_alpha()
         self.blackhole_img = pygame.image.load(BLACKHOLE_IMG).convert_alpha()
+        self.pulsar_img = pygame.image.load(PULSAR_IMG).convert_alpha()
+        self.powerup_img = pygame.image.load(POWERUP_IMG).convert_alpha()
         self.asteroid_imgs = [pygame.image.load(img).convert_alpha()
                               for img in ASTEROID_IMGS]
 
@@ -50,14 +52,13 @@ class Game:
         self.lasers = pygame.sprite.Group()
         self.asteroids = pygame.sprite.Group()
         self.blackholes = pygame.sprite.Group()
+        self.pulsars = pygame.sprite.Group()
+        self.items = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
         
-        self.start_location = WORLD_WIDTH // 2, WOLRD_HEIGHT // 2
+        self.start_location = [9800, 10200]
         self.ship = Ship(self, self.ship_img, self.start_location, CONTROLS)
         self.players.add(self.ship)
-
-
-        self.all_sprites.add(self.players)
 
         self.camera = ScrollingCamera(self.screen, [self.world_width, self.world_height], self.ship, 0.8)
 
@@ -76,6 +77,11 @@ class Game:
         blackhole1 = BlackHole(self, self.blackhole_img, loc1, loc2)
         blackhole2 = BlackHole(self, self.blackhole_img, loc2, loc1)
         self.blackholes.add(blackhole1, blackhole2)
+
+        # make pulsar
+        loc = [self.world_width // 2, self.world_height // 2]
+        pulsar = Pulsar(self, self.pulsar_img, loc)
+        self.pulsars.add(pulsar)
 
         # maybe make stars sprites later, or perhaps make a StarField class
         self.star_locs = [] 
@@ -114,7 +120,7 @@ class Game:
             self.ship.act(filtered_events, pressed_keys)
      
     def update(self):
-        self.all_sprites.add(self.lasers, self.asteroids, self.blackholes)
+        self.all_sprites.add(self.players, self.lasers, self.asteroids, self.blackholes, self.pulsars, self.items) # is this efficient?
 
         if self.scene == Game.PLAYING:
             self.all_sprites.update()
@@ -122,7 +128,7 @@ class Game:
         self.camera.update()
 
     def render(self):
-        group_drawing_order = [self.blackholes, self.lasers, self.asteroids, self.players]
+        group_drawing_order = [self.blackholes, self.lasers, self.asteroids, self.players, self.items, self.pulsars]
         offset_x, offset_y = self.camera.get_offsets()
 
         self.screen.fill(BLACK)

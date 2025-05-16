@@ -17,6 +17,7 @@ class Entity(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.location = pygame.Vector2(location)
+        self.original_location = self.location.copy()
         self.rect.center = self.location
         self.angle = 0
         self.previous_angle = self.angle
@@ -53,12 +54,12 @@ class Ship(Entity):
 
         self.controls = controls
         self.angle = 90
-        self.original_location = self.location.copy()
         self.previous_angle = self.angle
         self.velocity = pygame.Vector2(0, 0)
         self.speed = 0
         self.blackhole_escape_time = 0
         self.controls_disabled = False
+        self.shield = SHIP_STARTING_SHIELD
 
     def act(self, events, keys):
         if self.controls_disabled:
@@ -125,6 +126,12 @@ class Ship(Entity):
         if hits:
             self.respawn()  # should probably blow up and lose lives or something
 
+    def check_items(self):
+        hits = pygame.sprite.spritecollide(self, self.game.items, True, pygame.sprite.collide_mask)
+
+        for item in hits:
+            item.apply(self)
+
     def check_boundaries(self):
         if WORLD_WRAP:
             if self.location.x < 0:
@@ -160,6 +167,7 @@ class Ship(Entity):
         self.check_boundaries()
         self.check_blackholes()
         self.check_asteroids()
+        self.check_items()
 
 
 class Laser(Entity):
@@ -170,7 +178,6 @@ class Laser(Entity):
         self.rotate_to(angle)
         radians = math.radians(angle)
         self.velocity = pygame.Vector2(math.cos(radians), -1 * math.sin(radians)) * LASER_SPEED
-        self.original_location = self.location.copy()
 
     def update(self, *args, **kwargs):
         self.move()
@@ -200,7 +207,6 @@ class Asteroid(Entity):
         if hits:
             self.kill()  # later, they should break up
 
- 
     def check_world_edges(self):
         if self.location.x < 0:
             self.location.x = self.game.world_width
@@ -225,7 +231,7 @@ class BlackHole(Entity):
     def __init__(self, game, image, location, destination):
         super().__init__(game, image, location)    
 
-        self.rotational_speed = random.randrange(ASTEROID_MIN_ROTATION_SPEED, ASTEROID_MAX_ROTATION_SPEED)
+        self.rotational_speed = random.randrange(BLACKHOLE_MIN_ROTATION_SPEED, BLACKHOLE_MAX_ROTATION_SPEED)
         self.rotational_speed *= random.choice([-1, 1])
         self.destination = destination
 
@@ -248,3 +254,43 @@ class BlackHole(Entity):
     def update(self, *args, **kwargs):
         self.angle += self.rotational_speed
         self.rotate_to(self.angle)
+
+
+class ShieldBoost(Entity):
+
+    def __init__(self, game, image, location):
+        super().__init__(game, image, location)
+
+        speed = random.randrange(ITEM_MIN_SPEED, ITEM_MAX_SPEED)
+        self.distance_to_travel = random.randrange(MIN_ITEM_DISTANCE, MAX_ITEM_DISTANCE)
+        angle = random.randrange(0, 360)
+        radians = math.radians(angle)
+        self.velocity = pygame.Vector2(math.cos(radians), -1 * math.sin(radians)) * speed
+
+    def apply(self, ship):
+        ship.shield += 1
+        
+    def update(self, *args, **kwargs):
+        self.move()
+
+        distance_traveled_squared = self.location.distance_squared_to(self.original_location)
+
+        if distance_traveled_squared > self.distance_to_travel ** 2:
+            self.kill()
+
+
+class Pulsar(Entity):
+
+    def __init__(self, game, image, location):
+        super().__init__(game, image, location)
+
+    def spawn_item(self):
+        r = random.randrange(0, FPS)
+
+        if r < ITEMS_PER_SECOND:
+            item = ShieldBoost(self.game, self.game.powerup_img, self.location)
+            self.game.items.add(item)
+
+    def update(self):
+        self.rotate_amount(PULSAR_ROTATION_SPEED)
+        self.spawn_item()
