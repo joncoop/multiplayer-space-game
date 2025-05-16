@@ -20,7 +20,7 @@ SECONDARY_FONT = None
 # World
 WORLD_WIDTH = 20000
 WOLRD_HEIGHT = 20000
-WORLD_WRAP = False
+WORLD_WRAP = False  # Camera lag is kinda weird if True
 
 # Ship
 SHIP_IMG = 'assets/images/player_ships/playerShip1_blue.png'
