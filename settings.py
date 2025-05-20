@@ -36,6 +36,7 @@ MIN_VELOCITY_SQUARED = 0.25
 PLAYER_LASER = 'assets/images/lasers/laserBlue05.png'
 LASER_SPEED = 24
 MAX_LASER_DISTANCE = 3000
+DOUBLE_SHOT_TIME = 6 * FPS
 
 # PULSAR
 PULSAR_IMG = 'assets/images/items/pulsar_256x151.png'
@@ -74,6 +75,9 @@ BLACKHOLE_IMG = 'assets/images/blackholes/blackhole_384x384.png'
 BLACKHOLE_ESCAPE_TIME = 2 * FPS
 BLACKHOLE_MIN_ROTATION_SPEED = 3
 BLACKHOLE_MAX_ROTATION_SPEED = 8
+BLACKHOLE_FADE_RATE = 0.999
+BLACKHOLE_CAPTURE_THRESHOLD = 1
+
 
 # Sounds
 SHOOT_SND = 'assets/sounds/laser.ogg'
