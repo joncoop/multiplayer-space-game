@@ -31,7 +31,7 @@ class Entity(pygame.sprite.Sprite):
             self.image.set_alpha(alpha)
 
     def rotate_amount(self, angle):
-        self.angle += angle
+        self.angle = (self.angle + angle) % 360
         self.rotate_to(self.angle)
 
     def move(self):
@@ -60,6 +60,7 @@ class Ship(Entity):
         self.blackhole_escape_time = 0
         self.controls_disabled = False
         self.shield = SHIP_STARTING_SHIELD
+        self.doubleshot_time = 0
 
     def act(self, events, keys):
         if self.controls_disabled:
@@ -107,12 +108,20 @@ class Ship(Entity):
             self.velocity.update(0, 0)
 
     def shoot(self):
-        radians = math.radians(self.angle)
-        direction = pygame.Vector2(math.cos(radians), -1 * math.sin(radians))
-        laser_spawn_point = self.location + direction * self.original_image.get_height() / 2
-
-        laser = Laser(self.game, self.game.laser_img, laser_spawn_point, self.angle)
-        self.game.lasers.add(laser)
+        if self.doubleshot_time > 0:
+            radians = math.radians(self.angle - 90)
+            perpendicular_direction = pygame.Vector2(math.cos(radians), -1 * math.sin(radians))
+            laser_spawn_point1 = self.location - perpendicular_direction * self.original_image.get_width() / 2
+            laser_spawn_point2 = self.location + perpendicular_direction * self.original_image.get_width() / 2
+            laser1 = Laser(self.game, self.game.laser_img, laser_spawn_point1, self.angle)
+            laser2 = Laser(self.game, self.game.laser_img, laser_spawn_point2, self.angle)
+            self.game.lasers.add(laser1, laser2)
+        else:
+            radians = math.radians(self.angle)
+            forward_direction = pygame.Vector2(math.cos(radians), -1 * math.sin(radians))
+            laser_spawn_point = self.location + forward_direction * self.original_image.get_height() / 2
+            laser = Laser(self.game, self.game.laser_img, laser_spawn_point, self.angle)
+            self.game.lasers.add(laser)
 
     def respawn(self):
         self.location = self.original_location.copy()
@@ -131,6 +140,9 @@ class Ship(Entity):
 
         for item in hits:
             item.apply(self)
+
+        if self.doubleshot_time > 0:
+            self.doubleshot_time -= 1
 
     def check_boundaries(self):
         if WORLD_WRAP:
@@ -243,9 +255,9 @@ class BlackHole(Entity):
         if ship.controls_disabled:
             ship.location.move_towards_ip(self.location, 1)
             ship.rotate_amount(self.rotational_speed)
-            ship.image.set_alpha(ship.image.get_alpha() * 0.999) # Magic number alert!
+            ship.image.set_alpha(ship.image.get_alpha() * BLACKHOLE_FADE_RATE)
         
-        if ship.location.distance_squared_to(self.location) < 1 and ship.image.get_alpha() < 1: # Another magic number!
+        if ship.location.distance_squared_to(self.location) < 1 and ship.image.get_alpha() < BLACKHOLE_CAPTURE_THRESHOLD:
             ship.move_to(self.destination)
             ship.blackhole_escape_time = BLACKHOLE_ESCAPE_TIME
             ship.controls_disabled = False
@@ -256,7 +268,7 @@ class BlackHole(Entity):
         self.rotate_to(self.angle)
 
 
-class ShieldBoost(Entity):
+class Item(Entity):
 
     def __init__(self, game, image, location):
         super().__init__(game, image, location)
@@ -268,7 +280,7 @@ class ShieldBoost(Entity):
         self.velocity = pygame.Vector2(math.cos(radians), -1 * math.sin(radians)) * speed
 
     def apply(self, ship):
-        ship.shield += 1
+        raise NotImplementedError
         
     def update(self, *args, **kwargs):
         self.move()
@@ -277,6 +289,24 @@ class ShieldBoost(Entity):
 
         if distance_traveled_squared > self.distance_to_travel ** 2:
             self.kill()
+
+
+class ShieldBoost(Item):
+
+    def __init__(self, game, image, location):
+        super().__init__(game, image, location)
+
+    def apply(self, ship):
+        ship.shield += 1
+
+
+class DoubleShot(Item):
+
+    def __init__(self, game, image, location):
+        super().__init__(game, image, location)
+
+    def apply(self, ship):
+        ship.doubleshot_time = DOUBLE_SHOT_TIME
 
 
 class Pulsar(Entity):
@@ -288,7 +318,8 @@ class Pulsar(Entity):
         r = random.randrange(0, FPS)
 
         if r < ITEMS_PER_SECOND:
-            item = ShieldBoost(self.game, self.game.powerup_img, self.location)
+            powerup_type = random.choice([ShieldBoost, DoubleShot])
+            item = powerup_type(self.game, self.game.powerup_img, self.location)
             self.game.items.add(item)
 
     def update(self):
