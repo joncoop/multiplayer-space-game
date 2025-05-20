@@ -128,7 +128,7 @@ class Game:
         self.camera.update()
 
     def render(self):
-        group_drawing_order = [self.blackholes, self.lasers, self.asteroids, self.players, self.items, self.pulsars]
+        group_drawing_order = [self.blackholes, self.lasers, self.asteroids, self.items, self.pulsars, self.players]
         offset_x, offset_y = self.camera.get_offsets()
 
         self.screen.fill(BLACK)
