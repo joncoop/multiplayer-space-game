@@ -96,10 +96,13 @@ class Pulsar(Entity):
 
     def apply(self, ship):
         if ship.escape_time == 0:
+            direction_to_ship = (self.location - ship.location).normalize()
+            fling_angle = 90 if self.rotational_speed > 0 else -90
+            
+            ship.velocity = direction_to_ship.rotate(fling_angle) * settings.PULSAR_FLING_SPEED
+            ship.rotational_speed = self.rotational_speed
             ship.controls_enabled = False
             ship.escape_time = settings.ESCAPE_TIME
-            ship.velocity = (self.location - ship.location).normalize().rotate(90) * settings.PULSAR_FLING_SPEED
-            ship.rotational_speed = self.rotational_speed
 
     def update(self):
         self.rotate_amount(self.rotational_speed)

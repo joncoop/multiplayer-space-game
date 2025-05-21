@@ -74,7 +74,10 @@ class Ship(Entity):
         if self.velocity.length_squared() < settings.MIN_VELOCITY_SQUARED:
             self.velocity.update(0, 0)
 
-        self.rotational_speed = max(self.rotational_speed - settings.ROTATIONAL_DRAG, 0)
+        if self.rotational_speed > 0:
+            self.rotational_speed = max(self.rotational_speed - settings.ROTATIONAL_DRAG, 0)
+        if self.rotational_speed < 0:
+            self.rotational_speed = min(self.rotational_speed + settings.ROTATIONAL_DRAG, 0)
 
     def shoot(self):
         if self.doubleshot_time > 0:
