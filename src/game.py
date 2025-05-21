@@ -48,6 +48,7 @@ class Game:
     def new_game(self):
         self.world_width = settings.WORLD_WIDTH
         self.world_height = settings.WOLRD_HEIGHT
+        self.starfield = entities.Starfield(self, settings.NUM_STARS)
 
         self.players = pygame.sprite.Group()
         self.lasers = pygame.sprite.Group()
@@ -84,11 +85,6 @@ class Game:
         self.pulsars.add(pulsar)
 
         # maybe make stars sprites later, or perhaps make a StarField class
-        self.star_locs = [] 
-        for _ in range(settings.NUM_STARS):
-            x = random.randrange(0, self.world_width)
-            y = random.randrange(0, self.world_width)
-            self.star_locs.append([x, y])
 
     def start_playing(self):
         self.scene = Game.PLAYING
@@ -135,13 +131,7 @@ class Game:
         offset_x, offset_y = self.camera.get_offsets()
 
         self.screen.fill(settings.BLACK)
-
-        for loc in self.star_locs:
-            x = loc[0] - offset_x
-            y = loc[1] - offset_y
-            r = random.randint(0, 25) # Magic number alert!
-            color = settings.WHITE if r == 0 else settings.LIGHT_GRAY
-            pygame.draw.circle(self.screen, color, [x, y], 3)
+        self.starfield.draw(self.screen, offset_x, offset_y)
 
         for group in group_drawing_order:
             for sprite in group:

@@ -2,8 +2,8 @@ import pygame
 
 
 # Window settings
-SCREEN_WIDTH = 1600
-SCREEN_HEIGHT = 900
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
 CAPTION = "My Awesome Game"
 FPS = 60
 
@@ -32,12 +32,12 @@ ESCAPE_TIME = 1.75 * FPS  # From black holes and pulsars
 ACCELERATION = 0.50
 DRAG = 0.01  # 0=No drag, 1=Instant stop
 MIN_VELOCITY_SQUARED = 0.25
+ROTATIONAL_DRAG = 0.1
 
 # Lasers
 PLAYER_LASER = 'assets/images/lasers/laserBlue05.png'
 LASER_SPEED = 24
 MAX_LASER_DISTANCE = 3000
-DOUBLE_SHOT_TIME = 6 * FPS
 
 # Items
 POWERUP_IMG = 'assets/images/items/powerupYellow_bolt.png'
@@ -47,9 +47,10 @@ MIN_ITEM_DISTANCE = 500
 MAX_ITEM_DISTANCE = 4000
 
 ITEMS_PER_SECOND = 0.1
+DOUBLE_SHOT_TIME = 10 * FPS
 
 # Stars
-NUM_STARS = 4000
+NUM_STARS = 5000
 
 # Asteroids
 NUM_ASTEROIDS = 100
@@ -77,6 +78,7 @@ BLACKHOLE_CAPTURE_THRESHOLD = 1
 # Pulsars
 PULSAR_IMG = 'assets/images/space_objects/pulsar_256x151.png'
 PULSAR_ROTATION_SPEED = 10
+PULSAR_FLING_SPEED = 8
 
 # Sounds
 SHOOT_SND = 'assets/sounds/laser.ogg'

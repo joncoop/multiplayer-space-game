@@ -96,11 +96,31 @@ class Pulsar(Entity):
 
     def apply(self, ship):
         if ship.escape_time == 0:
-            ship.controls_disabled = True
+            ship.controls_enabled = False
             ship.escape_time = settings.ESCAPE_TIME
-            ship.velocity = ship.velocity.normalize().rotate(90) * 8
+            ship.velocity = (self.location - ship.location).normalize().rotate(90) * settings.PULSAR_FLING_SPEED
             ship.rotational_speed = self.rotational_speed
 
     def update(self):
         self.rotate_amount(self.rotational_speed)
         self.spawn_item()
+
+
+class Starfield:
+
+    def __init__(self, game, num_stars):
+        self.game = game
+
+        self.star_locs = [] 
+        for _ in range(num_stars):
+            x = random.randrange(0, self.game.world_width)
+            y = random.randrange(0, self.game.world_width)
+            self.star_locs.append([x, y])
+
+    def draw(self, surface, offset_x, offset_y):
+        for loc in self.star_locs:
+            x = loc[0] - offset_x
+            y = loc[1] - offset_y
+            r = random.randint(0, 25) # Magic number alert!
+            color = settings.WHITE if r == 0 else settings.LIGHT_GRAY
+            pygame.draw.circle(surface, color, [x, y], 3)        
