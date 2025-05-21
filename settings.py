@@ -24,7 +24,7 @@ WORLD_WRAP = False  # Camera lag is kinda weird if True
 
 # Ship
 SHIP_IMG = 'assets/images/player_ships/playerShip1_blue.png'
-SHIP_MAX_SPEED = 16
+SHIP_MAX_SPEED = 10
 SHIP_TURN_SPEED = 2
 SHIP_STARTING_SHIELD = 3
 

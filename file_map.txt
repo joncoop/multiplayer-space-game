@@ -1,0 +1,39 @@
+multiplayer-space-game/
+│
+├── LICENSE
+├── README.md
+├── main.py
+├── requirements.txt
+├── settings.py
+│
+├── assets
+│   ├── sources.txt
+│   ├── fonts/
+│   ├── images/
+│   ├── levels/
+│   ├── music/
+│   └── sounds/
+│
+└── src/
+    ├── __init__.py
+    ├── game.py
+    │
+    ├── camera/
+    │   ├── __init__.py
+    │   └── camera.py
+    │
+    ├── entities/
+    │   ├── __init__.py
+    │   ├── entity.py
+    │   ├── ship.py
+    │   ├── items.py
+    │   └── space_objects.py
+    │   
+    ├── overlays/
+    │   ├── __init__.py
+    │   ├── hud.py   
+    │   └── scenes.py
+    │   
+    └── universe/
+        ├── __init__.py
+        └── universe.py
