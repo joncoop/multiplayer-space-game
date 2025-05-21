@@ -19,41 +19,45 @@ class Ship(Entity):
         self.previous_angle = self.angle
         self.velocity = pygame.Vector2(0, 0)
         self.speed = 0
-        self.blackhole_escape_time = 0
+        self.escape_time = 0
         self.controls_disabled = False
         self.shield = settings.SHIP_STARTING_SHIELD
         self.doubleshot_time = 0
+        self.rotational_speed = 0
 
     def act(self, events, keys):
-        if self.controls_disabled:
-            return
-        
-        if keys[self.controls['left']]:
-            self.rotate_left()
-        elif keys[self.controls['right']]:
-            self.rotate_right()
+        if not self.controls_disabled:
+            if keys[self.controls['left']]:
+                self.rotate_left()
+            elif keys[self.controls['right']]:
+                self.rotate_right()
 
-        if keys[self.controls['thrust']]:
-            self.thrust()
+            if keys[self.controls['thrust']]:
+                self.thrust()
+            else:
+                self.slow()
+
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == self.controls['shoot']:
+                        self.shoot()
+                    if event.key == self.controls['respawn']:
+                        self.respawn()
+
         else:
             self.slow()
-
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == self.controls['shoot']:
-                    self.shoot()
-                if event.key == self.controls['respawn']:
-                    self.respawn()
 
     def rotate_left(self):
         self.previous_angle = self.angle
         self.angle += settings.SHIP_TURN_SPEED
         self.angle %= 360
+        self.rotational_speed = 0
 
     def rotate_right(self):
         self.previous_angle = self.angle
         self.angle -= settings.SHIP_TURN_SPEED
         self.angle %= 360
+        self.rotational_speed = 0
 
     def thrust(self):
         radians = math.radians(self.angle)
@@ -68,6 +72,8 @@ class Ship(Entity):
 
         if self.velocity.length_squared() < settings.MIN_VELOCITY_SQUARED:
             self.velocity.update(0, 0)
+
+        self.rotational_speed = max(self.rotational_speed - 0.1, 0)
 
     def shoot(self):
         if self.doubleshot_time > 0:
@@ -130,18 +136,32 @@ class Ship(Entity):
         hits = pygame.sprite.spritecollide(self, self.game.blackholes, False, pygame.sprite.collide_mask)
 
         for blackhole in hits:
-            if self.blackhole_escape_time == 0:
+            if self.escape_time == 0:
                 blackhole.apply(self)
-            else:
-                self.blackhole_escape_time -= 1
+
+    def check_pulsars(self):
+        hits = pygame.sprite.spritecollide(self, self.game.pulsars, False, pygame.sprite.collide_mask)
+
+        for pulsar in hits:
+            if self.escape_time == 0:
+                pulsar.apply(self)
+
+    def check_escape_time(self):
+        self.escape_time = max(self.escape_time - 1, 0)
+
+        if self.escape_time == 0:
+            self.controls_disabled = False
 
     def update(self, *args, **kwargs):
         self.rotate_to(self.angle)
         self.move()
         self.check_boundaries()
-        self.check_blackholes()
         self.check_asteroids()
+        self.check_blackholes()
+        self.check_pulsars()
         self.check_items()
+        self.check_escape_time()
+        self.rotate_amount(self.rotational_speed)
 
 
 class Laser(Entity):

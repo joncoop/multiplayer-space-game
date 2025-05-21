@@ -59,7 +59,7 @@ class BlackHole(Entity):
         self.destination = destination
 
     def apply(self, ship):
-        if ship.blackhole_escape_time == 0:
+        if ship.escape_time == 0:
             ship.controls_disabled = True
             ship.velocity.update(0, 0)
 
@@ -70,7 +70,7 @@ class BlackHole(Entity):
         
         if ship.location.distance_squared_to(self.location) < 1 and ship.image.get_alpha() < settings.BLACKHOLE_CAPTURE_THRESHOLD:
             ship.move_to(self.destination)
-            ship.blackhole_escape_time = settings.BLACKHOLE_ESCAPE_TIME
+            ship.escape_time = settings.ESCAPE_TIME
             ship.controls_disabled = False
             ship.image.set_alpha(255)
 
@@ -84,6 +84,8 @@ class Pulsar(Entity):
     def __init__(self, game, image, location):
         super().__init__(game, image, location)
 
+        self.rotational_speed = settings.PULSAR_ROTATION_SPEED
+
     def spawn_item(self):
         r = random.randrange(0, settings.FPS)
 
@@ -92,6 +94,13 @@ class Pulsar(Entity):
             item = powerup_type(self.game, self.game.powerup_img, self.location)
             self.game.items.add(item)
 
+    def apply(self, ship):
+        if ship.escape_time == 0:
+            ship.controls_disabled = True
+            ship.escape_time = settings.ESCAPE_TIME
+            ship.velocity = ship.velocity.normalize().rotate(90) * 8
+            ship.rotational_speed = self.rotational_speed
+
     def update(self):
-        self.rotate_amount(settings.PULSAR_ROTATION_SPEED)
+        self.rotate_amount(self.rotational_speed)
         self.spawn_item()

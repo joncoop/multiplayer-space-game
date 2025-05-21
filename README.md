@@ -7,7 +7,8 @@ This is a work in progress. The eventual goal is to have multiple players battle
 - Add animated fire when ship is using thruster. (Easyish, just overlay ship and fire image. Animate to be cooler.)
 - Speedboost powerup that gives 3 boosts (like Mario Kart mushrooms).
 - Forcefield powerup.
-- Shooting asteroids breaks them into smaller pieces. Smallest ones dissapear.
+- Shooting asteroids breaks them into smaller pieces. Smallest ones dissapear. 
+- Little asteroids do damage to ship. Big asteroids kill ship.
 - Shoot big asteroids to spawn minerals to "mine", randomly generated.
 - Add gravity to black holes.
 - Rate limit ship shooting.
